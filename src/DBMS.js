@@ -6,8 +6,13 @@ class DBMS extends Array {
 
   id = getId();
 
+  getId() {
+   return getId(...arguments);
+  }
+
   insert(table, record) {
-    const id = getId(table, table),updatedRecord= deepAssign(record, {id});
+    const id = this.getId(table, table),
+    updatedRecord= deepAssign(record, {id, dateCreated: new Date()});
     this.push(updatedRecord);
     return updatedRecord;
   }
@@ -15,16 +20,27 @@ class DBMS extends Array {
   update(table , id , newRecord, override = false) {
     const recordIndex= this.findIndex((record) =>  DBMS.isBelongsTo(record, table) && record.id === id);
     if (recordIndex >= 0) {
-      this[recordIndex]= override ? deepAssign({id:this[recordIndex].id }, newRecord) : deepAssign(this[recordIndex], newRecord);
+      newRecord= deepAssign( newRecord, {id: this[recordIndex].id, lastUpdated: new Date() });
+      this[recordIndex]= override ? newRecord: deepAssign(this[recordIndex], newRecord);
       return this[recordIndex];
     }
   }
 
-  find(table, where = ((record, i) => true)) {
+  findAll(table, where = ((record, i) => true)) {
     if (arguments.length === 1)
       return this.filter((record) => DBMS.isBelongsTo(record, table));
     else
       return this.filter((record, i) => DBMS.isBelongsTo(record, table) && where(record, i));
+  }
+
+  find() {
+   const results = this.findAll(...arguments);
+   if (results.length)
+    return results[0];
+  }
+
+  findById(table, id) {
+   return this.find(table, (record) => record.id === id);
   }
 
   remove(table, where) {
@@ -44,7 +60,11 @@ class DBMS extends Array {
     }
   }
 
-
+  count(table) {
+   if (!arguments.length)
+    return this.length;
+   return this.findAll(table).length;
+  }
 
   static isBelongsTo(record, table) {
     return record.id.startsWith(table) && record.id.endsWith(table);

@@ -11,7 +11,11 @@ exports.dbms = undefined;
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
+var _class;
+
 var _helper = require('./helper');
+
+var _babelAutobind = require('babel-autobind');
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
@@ -19,8 +23,33 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
-var DBMS = function (_Array) {
-  _inherits(DBMS, _Array);
+function _extendableBuiltin(cls) {
+  function ExtendableBuiltin() {
+    var instance = Reflect.construct(cls, Array.from(arguments));
+    Object.setPrototypeOf(instance, Object.getPrototypeOf(this));
+    return instance;
+  }
+
+  ExtendableBuiltin.prototype = Object.create(cls.prototype, {
+    constructor: {
+      value: cls,
+      enumerable: false,
+      writable: true,
+      configurable: true
+    }
+  });
+
+  if (Object.setPrototypeOf) {
+    Object.setPrototypeOf(ExtendableBuiltin, cls);
+  } else {
+    ExtendableBuiltin.__proto__ = cls;
+  }
+
+  return ExtendableBuiltin;
+}
+
+var DBMS = (0, _babelAutobind.Autobind)(_class = function (_extendableBuiltin2) {
+  _inherits(DBMS, _extendableBuiltin2);
 
   function DBMS() {
     var _ref;
@@ -37,12 +66,28 @@ var DBMS = function (_Array) {
   }
 
   _createClass(DBMS, [{
+    key: 'getId',
+    value: function getId() {
+      return _helper.getId.apply(undefined, arguments);
+    }
+  }, {
     key: 'insert',
-    value: function insert(table, record) {
-      var id = (0, _helper.getId)(table, table),
-          updatedRecord = (0, _helper.deepAssign)(record, { id: id });
-      this.push(updatedRecord);
-      return updatedRecord;
+    value: function insert(table) {
+      var _this2 = this;
+
+      for (var _len2 = arguments.length, records = Array(_len2 > 1 ? _len2 - 1 : 0), _key2 = 1; _key2 < _len2; _key2++) {
+        records[_key2 - 1] = arguments[_key2];
+      }
+
+      var added = records.map(function (record) {
+        var id = _this2.getId(table, table),
+            updatedRecord = (0, _helper.deepAssign)(record, { id: id, dateCreated: new Date() });
+        _this2.push(updatedRecord);
+        return updatedRecord;
+      });
+      if (records.length === 1) return added[0];
+
+      return added;
     }
   }, {
     key: 'update',
@@ -53,13 +98,14 @@ var DBMS = function (_Array) {
         return DBMS.isBelongsTo(record, table) && record.id === id;
       });
       if (recordIndex >= 0) {
-        this[recordIndex] = override ? (0, _helper.deepAssign)({ id: this[recordIndex].id }, newRecord) : (0, _helper.deepAssign)(this[recordIndex], newRecord);
+        newRecord = (0, _helper.deepAssign)(newRecord, { id: this[recordIndex].id, lastUpdated: new Date() });
+        this[recordIndex] = override ? newRecord : (0, _helper.deepAssign)(this[recordIndex], newRecord);
         return this[recordIndex];
       }
     }
   }, {
-    key: 'find',
-    value: function find(table) {
+    key: 'findAll',
+    value: function findAll(table) {
       var where = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : function (record, i) {
         return true;
       };
@@ -68,6 +114,19 @@ var DBMS = function (_Array) {
         return DBMS.isBelongsTo(record, table);
       });else return this.filter(function (record, i) {
         return DBMS.isBelongsTo(record, table) && where(record, i);
+      });
+    }
+  }, {
+    key: 'find',
+    value: function find() {
+      var results = this.findAll.apply(this, arguments);
+      if (results.length) return results[0];
+    }
+  }, {
+    key: 'findById',
+    value: function findById(table, id) {
+      return this.find(table, function (record) {
+        return record.id === id;
       });
     }
   }, {
@@ -90,6 +149,12 @@ var DBMS = function (_Array) {
         }
       }
     }
+  }, {
+    key: 'count',
+    value: function count(table) {
+      if (!arguments.length) return this.length;
+      return this.findAll(table).length;
+    }
   }], [{
     key: 'isBelongsTo',
     value: function isBelongsTo(record, table) {
@@ -98,17 +163,21 @@ var DBMS = function (_Array) {
   }]);
 
   return DBMS;
-}(Array);
+}(_extendableBuiltin(Array))) || _class;
 
 var dbms = exports.dbms = new DBMS();
 exports.default = DBMS;
-},{"./helper":3}],3:[function(require,module,exports){
+},{"./helper":3,"babel-autobind":5}],3:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
+
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
+
 exports.deepAssign = deepAssign;
+exports.isObject = isObject;
 
 function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
@@ -126,6 +195,10 @@ function deepAssign(target, source) {
   return output;
 }
 
+function isObject(item) {
+  return item && (typeof item === 'undefined' ? 'undefined' : _typeof(item)) === 'object' && !Array.isArray(item) && item !== null;
+}
+
 var getId = exports.getId = function getId() {
   var prefix = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : '_';
   var suffix = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : '_';
@@ -137,12 +210,81 @@ var getId = exports.getId = function getId() {
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.del = exports.update = exports.select = exports.insert = undefined;
+exports.count = exports.del = exports.update = exports.findById = exports.find = exports.findAll = exports.insert = exports.dbms = undefined;
 
 var _DBMS = require('./DBMS');
 
+exports.dbms = _DBMS.dbms;
 var insert = exports.insert = _DBMS.dbms.insert.bind(undefined);
-var select = exports.select = _DBMS.dbms.find.bind(undefined);
+var findAll = exports.findAll = _DBMS.dbms.findAll.bind(undefined);
+var find = exports.find = _DBMS.dbms.find.bind(undefined);
+var findById = exports.findById = _DBMS.dbms.findById.bind(undefined);
 var update = exports.update = _DBMS.dbms.update.bind(undefined);
 var del = exports.del = _DBMS.dbms.remove.bind(undefined);
-},{"./DBMS":2}]},{},[1]);
+var count = exports.count = _DBMS.dbms.count.bind(undefined);
+},{"./DBMS":2}],5:[function(require,module,exports){
+module.exports = require('./lib');
+
+},{"./lib":6}],6:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.Autobind = Autobind;
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+function Autobind(Mocked, ClassName) {
+  if (typeof Mocked === 'string') {
+    return function (target) {
+      return Autobind(target, Mocked);
+    };
+  }
+  var methods = Object.getOwnPropertyNames(Mocked.prototype);
+  var getMethodProperty = function getMethodProperty(methodName, prop) {
+    return Object.getOwnPropertyDescriptor(Mocked.prototype, methodName)[prop];
+  };
+  var methodsExcluded = ['constructor', 'render'];
+  var ruleIncluder = function ruleIncluder(methodName) {
+    return methodsExcluded.indexOf(methodName) < 0 && typeof getMethodProperty(methodName, 'value') === 'function';
+  };
+
+  var Mocker = function (_Mocked) {
+    _inherits(Mocker, _Mocked);
+
+    function Mocker() {
+      _classCallCheck(this, Mocker);
+
+      var _this = _possibleConstructorReturn(this, (Mocker.__proto__ || Object.getPrototypeOf(Mocker)).apply(this, arguments));
+
+      methods.filter(ruleIncluder).forEach(function (methodName) {
+        _this[methodName] = _this[methodName].bind(_this);
+      });
+      return _this;
+    }
+
+    return Mocker;
+  }(Mocked);
+
+  var rename = function () {
+    Object.defineProperty(Mocker, 'name', {
+      writable: true
+    });
+    Mocker.name = ClassName || Mocked.name || 'AutoBoundComponent';
+    Object.defineProperty(Mocker, 'name', {
+      writable: false
+    });
+  }();
+
+  Object.keys(Mocked).forEach(function (staticAttribute) {
+    Mocker[staticAttribute] = Mocked[staticAttribute];
+  });
+
+  return Mocker;
+};
+},{}]},{},[1]);

@@ -5,10 +5,11 @@
 
 In-memory NoSQL database which is accept any Javascript object including JSON data of course.
 
- In-memory terminology has two meanings according to the side:
+In-memory terminology has two meanings according to the side:
 
-      - Client Side : In-memory if the page is not reloaded or left.
-      - Server Side : In-memory if the application is still running.
+- Client Side : In-memory 👉🏼 if the page is not reloaded or left.
+
+- Server Side : In-memory 👉🏼 if the application is still running.
 
 # Install
 

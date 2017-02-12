@@ -1,7 +1,7 @@
 {
   "name": "in-mem",
-  "version": "0.0.1",
-  "description": "Still under development. It is not yet mature. Thank you for your understanding!",
+  "version": "0.0.2",
+  "description": "In-memory NoSQL isomorphic database which is accept any Javascript object including JSON data of course.",
   "main": "index.js",
   "scripts": {
     "compile": "babel -d lib/ src/   --no-comments",
@@ -27,7 +27,8 @@
     "database",
     "virtual-database",
     "fixtures",
-    "in-memory-database"
+    "in-memory-database",
+    "isomorphic"
   ],
   "author": "Abdennour TOUMI <http://abdennoor.com>",
   "license": "MIT",

@@ -1,6 +1,14 @@
 import {deepAssign, getId} from './helper';
 import {Autobind} from 'babel-autobind';
+/**
+ * @name Overview
+ * @example
+ *  import {insert, find} from 'in-mem';
 
+ *  const personA = insert('person', {firstname:'Ahmed'});
+
+ *  find(personA.id) // {id: '...',firstname:"Ahmed", dateCreated: "2017-02-12T07:24:57.612Z"}
+ */
 @Autobind
 class DBMS extends Array {
 
@@ -10,11 +18,31 @@ class DBMS extends Array {
    return getId(...arguments);
   }
 
-  insert(table, record) {
-    const id = this.getId(table, table),
-    updatedRecord= deepAssign(record, {id, dateCreated: new Date()});
-    this.push(updatedRecord);
-    return updatedRecord;
+  /**
+   * Insert data in in-memory database.
+   * @method insert
+   * @param  {String} table   Table Name of database
+   * @param  {Object} records it can be one of multiple records (overloaded function)
+   * @return {Object|Array}         the data itself with new attributes which are "id" and "dateCreated"
+   *
+   * @example
+   *    const {insert} = require('in-mem');
+   *    insert('person', {firstname: "Ahmed", birth: new Date("1991/10/12")});
+   *    insert('product', {name: "مراعي"}, {name: "iPhone"});
+   *
+   */
+   insert(table, ...records) {
+    const added = records.map(record => {
+      const id = this.getId(table, table),
+      updatedRecord= deepAssign(record, {id, dateCreated: new Date()});
+      this.push(updatedRecord);
+      return updatedRecord;
+    });
+    if (records.length === 1)
+      return added[0]
+
+    return added;
+
   }
 
   update(table , id , newRecord, override = false) {

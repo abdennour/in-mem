@@ -22,8 +22,12 @@
   "keywords": [
     "es7",
     "in-mem",
-    "in",
-    "mem"
+    "in-memory",
+    "nosql",
+    "database",
+    "virtual-database",
+    "fixtures",
+    "in-memory-database"
   ],
   "author": "Abdennour TOUMI <http://abdennoor.com>",
   "license": "MIT",

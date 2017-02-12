@@ -1,10 +1,19 @@
 import React from 'react';
-//import {inser} from 'in-mem';
-//window.dbms= dbms;
+import {insert, find} from 'in-mem';
+
 class App extends React.Component {
 
+  componentWillMount() {
+     const {id} =insert('person', {firstname: 'Ahmed'});
+     this.currentUserId = id;
+  }
   render() {
-    return (<h1>in-mem</h1>);
+
+    const user= find(this.currentUserId);
+
+    return (<div><h3>in-mem : </h3>
+      <p>{JSON.stringify(user)}</p>
+    </div>);
   }
 }
 

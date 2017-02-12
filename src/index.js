@@ -6,3 +6,4 @@ export const find = dbms.find.bind(this);
 export const findById = dbms.findById.bind(this);
 export const update = dbms.update.bind(this);
 export const del = dbms.remove.bind(this);
+export const count = dbms.count.bind(this);

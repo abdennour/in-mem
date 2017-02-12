@@ -3,7 +3,7 @@
 
 # Overview :
 
-In-memory NoSQL database which is accept any Javascript object including JSON data of course.
+In-memory NoSQL database which accepts any Javascript object including JSON data of course.
 
 In-memory terminology has two meanings according to the side:
 

@@ -1,7 +1,10 @@
 (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
+window.inMem = require('../index');
+
+},{"../index":2}],2:[function(require,module,exports){
 module.exports = require('./lib/index.js');
 
-},{"./lib/index.js":4}],2:[function(require,module,exports){
+},{"./lib/index.js":5}],3:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -167,7 +170,7 @@ var DBMS = (0, _babelAutobind.Autobind)(_class = function (_extendableBuiltin2) 
 
 var dbms = exports.dbms = new DBMS();
 exports.default = DBMS;
-},{"./helper":3,"babel-autobind":5}],3:[function(require,module,exports){
+},{"./helper":4,"babel-autobind":6}],4:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -204,7 +207,7 @@ var getId = exports.getId = function getId() {
   var suffix = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : '_';
   return prefix + parseInt(Math.random() * 10E10) + Date.now() + suffix;
 };
-},{}],4:[function(require,module,exports){
+},{}],5:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -222,10 +225,10 @@ var findById = exports.findById = _DBMS.dbms.findById.bind(undefined);
 var update = exports.update = _DBMS.dbms.update.bind(undefined);
 var del = exports.del = _DBMS.dbms.remove.bind(undefined);
 var count = exports.count = _DBMS.dbms.count.bind(undefined);
-},{"./DBMS":2}],5:[function(require,module,exports){
+},{"./DBMS":3}],6:[function(require,module,exports){
 module.exports = require('./lib');
 
-},{"./lib":6}],6:[function(require,module,exports){
+},{"./lib":7}],7:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {

@@ -1,0 +1,1 @@
+window.inMem = require('../index');

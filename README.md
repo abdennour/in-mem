@@ -16,6 +16,11 @@ In-memory terminology has two meanings according to the side:
 ```bash
 npm install in-mem --save;
 ```
+or as CDN :
+
+ ```html
+<script src="https://cdn.rawgit.com/abdennour/in-mem/9b5f99b7/cdn/in-mem-latest.min.js" type="text/javascript"></script>
+```
 
 # Example :
 
@@ -28,7 +33,21 @@ find(personA.id) // {id: '...',firstname:"Ahmed", dateCreated: "2017-02-12T07:24
 
 ```
 
-#Syntax :
+# Example when using CDN not NPM:
+
+```html
+<script src="https://cdn.rawgit.com/abdennour/in-mem/9b5f99b7/cdn/in-mem-latest.min.js" type="text/javascript"></script>
+<script >
+ const {insert, find} = inMem;
+
+ const personA = insert('person', {firstname:'Ahmed'});
+
+ find(personA.id) // {id: '...',firstname:"Ahmed", dateCreated: "2017-02-12T07:24:57.612Z"}
+
+</script>
+```
+
+# Syntax :
 
 ```js
 insert('table_name', record);
@@ -46,6 +65,7 @@ update('table_name', id, {lastname:  'Toto'});
 del('table_name') // delete the whole table
 del('table_name', id);
 ```
+
 
 # License:
 

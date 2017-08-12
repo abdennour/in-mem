@@ -7,8 +7,7 @@ export function deepAssign(target, source) {
           Object.assign(output, {
             [key]: source[key]
           });
-        else
-          output[key] = deepAssign(target[key], source[key]);
+        else output[key] = deepAssign(target[key], source[key]);
       } else {
         Object.assign(output, {
           [key]: source[key]
@@ -20,10 +19,14 @@ export function deepAssign(target, source) {
 }
 
 export function isObject(item) {
-  return (item && typeof item === 'object' && !Array.isArray(item) && item !== null);
+  return (
+    item && typeof item === 'object' && !Array.isArray(item) && item !== null
+  );
 }
 
+export const getId = (prefix = '_', suffix = '_') =>
+  prefix + parseInt(Math.random() * 10e10) + Date.now() + suffix;
 
-export const getId = ((prefix = '_', suffix = '_') =>
-  prefix + parseInt(Math.random() * 10E10) + Date.now() + suffix
-);
+export function updateObject(newObj, oldObj, override) {
+  return override ? newObj : deepAssign(oldObj, newObj);
+}

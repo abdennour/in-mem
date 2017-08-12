@@ -1,13 +1,14 @@
 import 'jsdom-global/register';
 import expect from 'expect';
 import sinon from 'sinon';
-import {fixtures} from './helper';
+import { fixtures } from './helper';
 import {
   dbms,
   insert,
   find,
   findAll,
   findById,
+  findByLocalId,
   update,
   del,
   count
@@ -15,8 +16,8 @@ import {
 
 describe(`in-mem`, () => {
   beforeEach(() => {
-   dbms.splice(0); // clear in-mem database
-  })
+    dbms.splice(0); // clear in-mem database
+  });
   it(`inserts elements`, () => {
     expect(dbms.length).toEqual(0);
     insert('person', {
@@ -27,18 +28,23 @@ describe(`in-mem`, () => {
   });
 
   it(`finds elements`, () => {
-    insert('person', {
-      firstname: 'Ahmed',
-      m: true
-    }, {
-      fullname: 'Raki Maki',
-      phone: 93340232,
-      bestDigits: [4, 7, 9]
-    }, {
-      firstname: 'Ahmed',
-      phone: 9332232
-    });
-    expect(findAll('person', (r) => r.firstname === 'Ahmed').length).toEqual(2);
+    insert(
+      'person',
+      {
+        firstname: 'Ahmed',
+        m: true
+      },
+      {
+        fullname: 'Raki Maki',
+        phone: 93340232,
+        bestDigits: [4, 7, 9]
+      },
+      {
+        firstname: 'Ahmed',
+        phone: 9332232
+      }
+    );
+    expect(findAll('person', r => r.firstname === 'Ahmed').length).toEqual(2);
   });
 
   it(`updates element`, () => {
@@ -47,15 +53,14 @@ describe(`in-mem`, () => {
       opened: 1330,
       capacity: 440
     });
-    const id = elementA.id;
-    update('school', id, {
+    const localId = elementA.$$id;
+    update('school', r => r.name === 'Xxxx', {
       capacity: 1000
     });
-    const elementB = findById('school', id);
+    const elementB = findByLocalId('school', localId);
     expect(elementB.name).toEqual('Xxxx');
     expect(elementB.capacity).toEqual(1000);
-  })
-
+  });
 
   it('removes element', () => {
     insert('event', {
@@ -74,7 +79,7 @@ describe(`in-mem`, () => {
       }
     });
     const sizeBeforeRemove = dbms.length;
-    del('event', (event) => event.name === 'Presentation');
+    del('event', event => event.name === 'Presentation');
     expect(dbms.length).toEqual(sizeBeforeRemove - 1);
   });
   it('removes the whole table', () => {
@@ -92,7 +97,5 @@ describe(`in-mem`, () => {
   it(`counts elements of the whole store`, () => {
     fixtures();
     expect(count()).toEqual(dbms.length);
-  })
-
-
-})
+  });
+});

@@ -60,7 +60,7 @@ findById('table_name', id);
 
 find('table_name', (record) =>  record.firstname === 'Ahmed');
 
-update('table_name', id, {lastname:  'Toto'});
+update('table_name', (record) => record.firstname === 'Ahmed', id, {lastname:  'Toto'});
 
 del('table_name') // delete the whole table
 del('table_name', id);

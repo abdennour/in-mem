@@ -1,6 +1,6 @@
 {
   "name": "in-mem",
-  "version": "0.0.2-RC2",
+  "version": "0.0.3",
   "description": "In-memory NoSQL isomorphic database which accepts any Javascript object including JSON data of course.",
   "main": "index.js",
   "scripts": {

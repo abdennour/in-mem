@@ -61,6 +61,9 @@ findById('table_name', id);
 find('table_name', (record) =>  record.firstname === 'Ahmed');
 
 update('table_name', (record) => record.firstname === 'Ahmed', id, {lastname:  'Toto'});
+// update(TABLE, where, newRecord, override = false)
+// --- OR ---
+// update(TABLE, where, (current) => newRecord, override = false )
 
 del('table_name') // delete the whole table
 del('table_name', id);

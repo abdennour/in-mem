@@ -56,7 +56,9 @@ class DBMS extends Array {
     recordIndexes.forEach(index => {
       this[index] = updateObject(
         {
-          ...newRecord,
+          ...(typeof newRecord === 'function'
+            ? newRecord({ ...this[index] })
+            : newRecord),
           [config.idCol]: this[index][config.idCol],
           lastUpdated: new Date()
         },

@@ -62,6 +62,23 @@ describe(`in-mem`, () => {
     expect(elementB.capacity).toEqual(1000);
   });
 
+  it(`updates element with accessing to current through callback`, () => {
+    const elementA = insert('school', {
+      name: 'Xxxx',
+      opened: 1330,
+      capacity: 440
+    });
+    const localId = elementA.$$id;
+    update(
+      'school',
+      r => r.name === 'Xxxx',
+      current => ({ capacity: current.capacity + 10 }) // new Record returned from callback to leverage the current record
+    );
+    const elementB = findByLocalId('school', localId);
+    expect(elementB.name).toEqual('Xxxx');
+    expect(elementB.capacity).toEqual(440 + 10);
+  });
+
   it('removes element', () => {
     insert('event', {
       name: 'How to learn Js',
